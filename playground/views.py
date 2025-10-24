@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.db.models import Q, F
-from store.models import Product, OrderItem
+from store.models import Product, OrderItem, Order
 
 # Create your views here.
 def calculate():
@@ -20,8 +20,8 @@ def say_hello(request):
     # query3 = Product.objects.values('id', 'title', 'collection__title')
     # query4 = Product.objects.values_list('id', 'title', 'collection__title')
 
-# exercise, get all products that are ordered sorted by their titles
-
+# exercise 1
+# get all products that are ordered sorted by their titles
     # query_set1 = Product.objects.filter(id__in = OrderItem.
     # objects.values('product_id').distinct()).order_by('title')
 
@@ -35,6 +35,14 @@ def say_hello(request):
     # except ObjectDoesNotExist:
     #     pass
 
-    query_set1 = Product.objects.select_related('collection').all()
-    
-    return render(request, 'hello.html', { 'name': 'mosh', 'products': list(query_set1) })
+    # query_set1 = Product.objects.select_related('collection').all()
+    # query_set1 = Product.objects.prefetch_related('promotions').all()
+    # query_set1 = Product.objects.prefetch_related('promotions').select_related('collection').all()
+
+# exercise 2
+# get the last 5 orders with their customer and items ( incl product )
+
+    query_set1 = Order.objects.select_related('customer').prefetch_related('orderitem_set__product').order_by('-placed_at')[:5]
+
+    # return render(request, 'hello.html', { 'name': 'mosh', 'products': list(query_set1) })
+    return render(request, 'hello.html', { 'name': 'mosh', 'orders': list(query_set1) })
