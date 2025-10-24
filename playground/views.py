@@ -1,8 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
 from django.db.models.aggregates import Count, Max, Min, Avg, Sum
 from store.models import Customer, Product, OrderItem, Order
+from tags.models import TaggedItem
 
 # Create your views here.
 def calculate():
@@ -11,8 +13,23 @@ def calculate():
     return x
 
 def say_hello(request):
-    # query_set1 = Product.objects.all()
+    content_type = ContentType.objects.get_for_model(Product)
+
+    query_set = TaggedItem.objects \
+        .select_related('tag') \
+        .filter(
+            content_type=content_type,
+            object_id=1
+        )
     
+    return render(request, 'hello.html', { 'name': 'mosh', 'res': list(query_set) })
+    
+    
+    
+    
+    
+    
+    # query_set1 = Product.objects.all()
     # queryset1 = Product.objects.filter(Q(inventory__lt=10) & Q(unit_price__lt=20))
     # queryset2 = Product.objects.filter(inventory=F('unit_price'))
     # queryset3 = Product.objects.order_by('unit_price', '-title')
@@ -50,6 +67,4 @@ def say_hello(request):
     # query_set1 = Customer.objects.annotate(order_count=Count('order'))
 
     # query_set1 = Product.objects.annotate(discounted_price=F('unit_price') * 0.8)
-
-    return render(request, 'hello.html', { 'name': 'mosh', 'customer': list(query_set1) })
     # return render(request, 'hello.html', { 'name': 'mosh', 'res': res })
