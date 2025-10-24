@@ -1,34 +1,23 @@
+from django.db.models.aggregates import Count, Max, Min, Avg, Sum
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, F
-from django.db.models.aggregates import Count, Max, Min, Avg, Sum
+
 from store.models import Customer, Product, OrderItem, Order
+
 from tags.models import TaggedItem
 
-# Create your views here.
 def calculate():
     x = 1
     y = 2
-    return x
+    return x + y
 
 def say_hello(request):
-    content_type = ContentType.objects.get_for_model(Product)
-
-    query_set = TaggedItem.objects \
-        .select_related('tag') \
-        .filter(
-            content_type=content_type,
-            object_id=1
-        )
+    query_set = TaggedItem.objects.get_tags_for(Product, 1)
     
     return render(request, 'hello.html', { 'name': 'mosh', 'res': list(query_set) })
-    
-    
-    
-    
-    
-    
+       
     # query_set1 = Product.objects.all()
     # queryset1 = Product.objects.filter(Q(inventory__lt=10) & Q(unit_price__lt=20))
     # queryset2 = Product.objects.filter(inventory=F('unit_price'))
