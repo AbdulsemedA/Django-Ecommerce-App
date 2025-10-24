@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.db.models import Q, F
 from django.db.models.aggregates import Count, Max, Min, Avg, Sum
-from store.models import Product, OrderItem, Order
+from store.models import Customer, Product, OrderItem, Order
 
 # Create your views here.
 def calculate():
@@ -45,6 +45,11 @@ def say_hello(request):
 
     # query_set1 = Order.objects.select_related('customer').prefetch_related('orderitem_set__product').order_by('-placed_at')[:5]
 
-    res = Product.objects.aggregate(count=Count('id'), min_price=Min('unit_price'))
-    # return render(request, 'hello.html', { 'name': 'mosh', 'products': list(query_set1) })
-    return render(request, 'hello.html', { 'name': 'mosh', 'res': res })
+    # res = Product.objects.aggregate(count=Count('id'), min_price=Min('unit_price'))
+    
+    # query_set1 = Customer.objects.annotate(order_count=Count('order'))
+
+    # query_set1 = Product.objects.annotate(discounted_price=F('unit_price') * 0.8)
+
+    return render(request, 'hello.html', { 'name': 'mosh', 'customer': list(query_set1) })
+    # return render(request, 'hello.html', { 'name': 'mosh', 'res': res })
