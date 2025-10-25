@@ -1,9 +1,7 @@
 from django.contrib import admin, messages
-from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models.aggregates import Count
 from django.utils.html import format_html, urlencode
 from django.urls import reverse
-from tags.models import TaggedItem
 from . import models
 
 class InventoryFilter(admin.SimpleListFilter):
@@ -20,10 +18,6 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__lt=10)
 
 # PRODUCT
-class TagInline(GenericTabularInline):
-    model = TaggedItem
-    autocomplete_fields = ['tag']
-
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ['collection']
@@ -36,7 +30,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ['collection', 'last_update', InventoryFilter]
     list_select_related = ['collection']
     search_fields = ['title']
-    inlines = [TagInline]
     list_per_page = 10
 
     def collection_title(self, product):
