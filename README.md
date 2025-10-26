@@ -1,1 +1,1 @@
-# Django-Ecommerce-App
+# Django-Framework-Learning-Path
